@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+            x:Class="ToDoList.MainPage"
+            xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             Title="Home"
+             xmlns:ToDoList="clr-namespace:ToDoList"
+             x:DataType="ToDoList:MainViewModel">
+    <ContentPage.Content>
+        <StackLayout
+            Spacing = "25"
+            Padding="30"
+            BackgroundColor="#ffffff">
+            <HorizontalStackLayout
+                Spacing = "20"
+                Padding = "5"
+                HorizontalOptions="FillAndExpand"
+                VerticalOptions="Fill">
+
+                <Entry
+                        x:Name="EntryEdit"
+                        Placeholder="Enter a task"
+                        FontFamily="Helvetica"
+                        FontSize="Default"
+                        VerticalOptions="Center"
+                        WidthRequest="270"
+                        Text="{Binding ActiveText}"
+                        ClearButtonVisibility="WhileEditing"/>
+                <Button
+                        HeightRequest="50"
+                        Text = "Add"
+                                             
+                        WidthRequest="60"
+                        BackgroundColor="#ffffff"
+                        BorderWidth="3"
+                        TextColor="#180344"
+                        HorizontalOptions="Center"
+                        
+                        Command="{Binding AddItemCommand}"
+                        CommandParameter="{Binding Source={x:Reference EntryEdit}, Path=Text}"
+                        IsVisible="{Binding ChangeModeInverse}"
+                        IsEnabled="{Binding ChangeModeInverse}"/>
+                <Button
+                        BackgroundColor="#180344"
+                        Text="Save"
+                        HeightRequest="50"
+                        WidthRequest="60"
+                        IsVisible="{Binding ChangeMode}"
+                        IsEnabled="{Binding ChangeMode}"
+                        Command="{Binding SaveCommand}"
+                        CommandParameter="{Binding Source={x:Reference EntryEdit}, Path=Text}"/>
+            </HorizontalStackLayout>
+            <StackLayout
+                    Orientation="Horizontal" HorizontalOptions="Fill" Spacing="30" RadioButtonGroup.GroupName="{Binding}" RadioButtonGroup.SelectedValue="{Binding color}">
+                <RadioButton Value="#000000" Content="black" IsChecked="True"/>
+                <RadioButton Value="#b3bcea" Content="blue"/>
+                <RadioButton Value="#530b3b" Content="wine"/>
+                <RadioButton Value="#7a005d" Content="purple"/>
+
+            </StackLayout>
+            <HorizontalStackLayout Margin="10"/>
+
+            <ListView ItemSelected="AboutNote" x:Name="NoteListView" ItemsSource="{Binding ToDoItems}">
+                
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="ToDoList:ToDoItem">
+                        <ViewCell>
+                            <FlexLayout JustifyContent = "SpaceBetween">
+
+                                <HorizontalStackLayout Spacing="20" >
+
+                                    <HorizontalStackLayout Spacing="-10" >
+                                        <CheckBox x:Name="checkBox" VerticalOptions="Center"/>
+                                        <BoxView CornerRadius="5" Color="{Binding Color}" WidthRequest="19" HeightRequest="19"/>
+                                    </HorizontalStackLayout>
+
+                                    <Label VerticalTextAlignment = "Center" InputTransparent="True" MaximumWidthRequest="250" LineBreakMode="TailTruncation" Text="{Binding Title}">
+                                        <Label.Triggers>
+                                            <DataTrigger
+                                            Binding = "{Binding Source={x:Reference checkBox}, Path=IsChecked}"
+                                            Value="true"
+                                            TargetType="Label">
+                                                <Setter Property = "TextDecorations" Value="Strikethrough"/>
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
+
+                                </HorizontalStackLayout>
+
+                                <HorizontalStackLayout >
+                                    <Button Text="Ins" Scale="0.8" BackgroundColor="#180344" Command="{Binding Source={RelativeSource FindAncestorBindingContext, AncestorType={x:Type ToDoList:MainViewModel}}, Path=ChangeCommand}" CommandParameter="{Binding}"/>
+                                    <Button Text="Del" Scale="0.8" BackgroundColor="#180344" Command="{Binding Source={RelativeSource FindAncestorBindingContext, AncestorType={x:Type ToDoList:MainViewModel}}, Path=DeleteItemCommand}" CommandParameter="{Binding}" />
+                                </HorizontalStackLayout>
+
+                            </FlexLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
